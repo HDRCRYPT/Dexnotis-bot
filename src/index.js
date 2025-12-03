@@ -1,22 +1,33 @@
 const { initializeBot } = require("./bot");
-const express = require("express"); // ⬅ added
+const express = require("express"); // heartbeat server
 
 async function main() {
   try {
     await initializeBot();
 
+    // ---------------- TELEGRAM LONG POLLING CONTROL ----------------
+    if (process.env.ENABLE_LONG_POLLING === "true") {
+      console.log("📡 Long polling enabled for Telegram bot (Render safe mode)");
+    } else {
+      console.log("⚠️ Long polling flag not set. Add ENABLE_LONG_POLLING=true in Render env vars.");
+    }
+    // ----------------------------------------------------------------
+
     // ---------------- HEARTBEAT SERVER ----------------
     const app = express();
     const PORT = process.env.PORT || 3000;
 
+    // Render uses this to check if container is alive
     app.get("/", (req, res) => {
       res.status(200).send("OK");
     });
 
-    app.get("/status", (req, res) => {
+    // UptimeRobot will ping this every 5 mins to keep bot awake
+    app.get("/health", (req, res) => {
       res.json({
         status: "running",
-        timestamp: Date.now()
+        monitoring: process.env.ENABLE_LONG_POLLING === "true" ? "active" : "inactive",
+        time: new Date().toISOString()
       });
     });
 
@@ -31,4 +42,3 @@ async function main() {
 }
 
 main();
-
