@@ -1,0 +1,23 @@
+{
+  "name": "dexnotis-bot",
+  "version": "1.0.0",
+  "description": "Solana Dex wallet monitor bot",
+  "main": "src/index.js",
+  "author": "Crypt",
+  "license": "MIT",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.98.4",
+    "chalk": "^4.1.2",
+    "dotenv": "^16.6.1",
+    "express": "^5.2.1",
+    "telegraf": "^4.16.3",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

@@ -1,0 +1,20 @@
+# Node dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Env variables
+.env
+
+# OS / Editor files
+.DS_Store
+.idea/
+.vscode/
+
+# Local JSON wallet storage
+src/data/
+wallets.json
+*.sqlite
+
+# Build artifacts (if any future TS build)
+dist/
