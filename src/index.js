@@ -1,5 +1,7 @@
 const { initializeBot } = require("./bot");
 const express = require("express"); // heartbeat server
+const { getWallets } = require("./jsonStorage"); // ⬅ added
+const { startMonitoring } = require("./handler"); // ⬅ added
 
 async function main() {
   try {
@@ -11,6 +13,26 @@ async function main() {
     } else {
       console.log("⚠️ Long polling flag not set. Add ENABLE_LONG_POLLING=true in Render env vars.");
     }
+    // ----------------------------------------------------------------
+
+    // ---------------- RESTORE MONITORING ON BOOT ----------------
+    setTimeout(async () => {
+      try {
+        const wallets = await getWallets();
+
+        for (const w of wallets) {
+          if (w.active) {
+            console.log(`🟢 Restoring monitor for ${w.label}...`);
+            // dummy ctx object to avoid Telegram reply spam
+            await startMonitoring({ reply: () => {} }, w);
+          }
+        }
+
+        console.log("✔ Monitoring restored for active wallets");
+      } catch (err) {
+        console.error("❌ Failed to restore monitoring:", err);
+      }
+    }, 4000);
     // ----------------------------------------------------------------
 
     // ---------------- HEARTBEAT SERVER ----------------
